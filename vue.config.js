@@ -17,6 +17,7 @@ const options = {
 
 const themePlugin = new AntDesignThemePlugin(options);
 module.exports = {
+  publicPath: "./",
   css: {
     loaderOptions: {
       less: {
