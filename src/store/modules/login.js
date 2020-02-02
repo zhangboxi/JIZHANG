@@ -10,11 +10,13 @@ const state = {
 const actions = {
   async login({ commit }, payload) {
     console.log(payload);
-    const response = (await request({
-      url: "/api/login/account",
-      method: "POST",
-      data: payload
-    })).data;
+    const response = (
+      await request({
+        url: "/api/login/account",
+        method: "POST",
+        data: payload
+      })
+    ).data;
     console.log(response);
     commit("changeLoginStatus", response);
     // Login successfully
@@ -53,11 +55,13 @@ const actions = {
   },
   async register({ commit }, payload) {
     console.log(payload);
-    const response = (await request({
-      url: "/api/register",
-      method: "POST",
-      data: payload
-    })).data;
+    const response = (
+      await request({
+        url: "/api/register",
+        method: "POST",
+        data: payload
+      })
+    ).data;
     console.log(response);
     if (response.status === "ok") {
       commit("changeLoginStatus", response);

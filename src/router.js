@@ -51,12 +51,42 @@ const router = new Router({
         // dashboard
         {
           path: "/",
-          redirect: "/dashboard/analysis"
+          redirect: "/account/message"
+        },
+        {
+          path: "/account",
+          name: "account",
+          meta: {
+            icon: "dashboard",
+            title: "记账信息",
+            authority: ["user", "admin"]
+          },
+          component: { render: h => h("router-view") },
+          children: [
+            {
+              path: "/account/message",
+              name: "message",
+              meta: { title: "详情页" },
+              component: () =>
+                import(
+                  /* webpackChunkName: "dashboard" */ "./views/Account/Message"
+                )
+            },
+            {
+              path: "/account/add",
+              name: "add",
+              meta: { title: "添加页" },
+              component: () =>
+                import(
+                  /* webpackChunkName: "dashboard" */ "./views/Account/Add"
+                )
+            }
+          ]
         },
         {
           path: "/dashboard",
           name: "dashboard",
-          meta: { icon: "dashboard", title: "仪表盘" },
+          meta: { icon: "dashboard", title: "仪表盘", authority: ["admin"] },
           component: { render: h => h("router-view") },
           children: [
             {
