@@ -105,7 +105,11 @@
       <a-button type="primary" html-type="submit">
         提交
       </a-button>
-      <a-button type="primary" @click="handleReset" :style="{ marginLeft: '64px' }">
+      <a-button
+        type="primary"
+        @click="handleReset"
+        :style="{ marginLeft: '64px' }"
+      >
         Clear
       </a-button>
     </a-form-item>
@@ -117,8 +121,16 @@ import request from "../../utils/request";
 
 export default {
   mounted() {
-    this.getPerson();
-    this.getAccountType();
+    if (this.$store.state.account.persondata === null) {
+      this.getPerson();
+    } else {
+      this.persondata = this.$store.state.account.persondata;
+    }
+    if (this.$store.state.account.accounttypedata === null) {
+      this.getAccountType();
+    } else {
+      this.accounttypedata = this.$store.state.account.accounttypedata;
+    }
   },
   data() {
     return {
@@ -149,8 +161,8 @@ export default {
         url: "/ACCOUNT/AccountController/SelectAccountType.do",
         method: "get"
       }).then(response => {
-        console.log(response.data);
         this.accounttypedata = response.data;
+        this.$store.state.account.accounttypedata = this.accounttypedata;
       });
     },
     getPerson() {
@@ -158,8 +170,8 @@ export default {
         url: "/ACCOUNT/AccountController/SelectPerson.do",
         method: "get"
       }).then(response => {
-        console.log(response.data);
         this.persondata = response.data;
+        this.$store.commit("account/set_Persondata", this.persondata);
       });
     },
     addAccount(params) {
