@@ -118,7 +118,7 @@
 
 <script>
 import request from "../../utils/request";
-
+import myMixin from "./basic";
 export default {
   mounted() {
     if (this.$store.state.account.persondata === null) {
@@ -132,6 +132,7 @@ export default {
       this.accounttypedata = this.$store.state.account.accounttypedata;
     }
   },
+  mixins: [myMixin],
   data() {
     return {
       formLayout: "horizontal",
@@ -155,24 +156,6 @@ export default {
     selecttimeF(date, dateString) {
       this.selecttime = dateString;
       console.log(this.selecttime);
-    },
-    getAccountType() {
-      request({
-        url: "/ACCOUNT/AccountController/SelectAccountType.do",
-        method: "get"
-      }).then(response => {
-        this.accounttypedata = response.data;
-        this.$store.state.account.accounttypedata = this.accounttypedata;
-      });
-    },
-    getPerson() {
-      request({
-        url: "/ACCOUNT/AccountController/SelectPerson.do",
-        method: "get"
-      }).then(response => {
-        this.persondata = response.data;
-        this.$store.commit("account/set_Persondata", this.persondata);
-      });
     },
     addAccount(params) {
       request({
