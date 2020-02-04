@@ -278,6 +278,7 @@ export default {
     },
     queryAccount(params) {
       console.log(params);
+      console.log(this);
       request({
         url: "ACCOUNT/AccountController/QueryAccount.do?",
         method: "get",
