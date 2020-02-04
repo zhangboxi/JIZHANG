@@ -1,9 +1,10 @@
 import request from "../../utils/request";
+import address from "./address";
 let myMixin = {
   methods: {
     getAccountType() {
       request({
-        url: "/ACCOUNT/AccountController/SelectAccountType.do",
+        url: address.SelectAccountType,
         method: "get"
       }).then(response => {
         this.accounttypedata = response.data;
@@ -14,7 +15,7 @@ let myMixin = {
     },
     getPerson() {
       request({
-        url: "/ACCOUNT/AccountController/SelectPerson.do",
+        url: address.SelectPerson,
         method: "get"
       }).then(response => {
         this.persondata = response.data;
@@ -25,7 +26,7 @@ let myMixin = {
     },
     getAccountType2() {
       return request({
-        url: "/ACCOUNT/AccountController/SelectAccountType.do",
+        url: address.SelectAccountType,
         method: "get"
       }).then(res => {
         return res;
@@ -33,7 +34,7 @@ let myMixin = {
     },
     getPerson2() {
       return request({
-        url: "/ACCOUNT/AccountController/SelectPerson.do",
+        url: address.SelectPerson,
         method: "get"
       }).then(res => {
         return res;

@@ -106,6 +106,7 @@
 <script>
 import request from "../../utils/request";
 import myMixin from "./basic";
+import address from "./address.js";
 
 const columns = [
   {
@@ -277,10 +278,8 @@ export default {
       });
     },
     queryAccount(params) {
-      console.log(params);
-      console.log(this);
       request({
-        url: "ACCOUNT/AccountController/QueryAccount.do?",
+        url: address.QueryAccount,
         method: "get",
         params: params
       }).then(response => {

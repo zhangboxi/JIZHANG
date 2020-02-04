@@ -119,6 +119,7 @@
 <script>
 import request from "../../utils/request";
 import myMixin from "./basic";
+import address from "./address.js";
 export default {
   mounted() {
     if (this.$store.state.account.persondata === null) {
@@ -159,7 +160,7 @@ export default {
     },
     addAccount(params) {
       request({
-        url: "/ACCOUNT/AccountController/addAccount.do",
+        url: address.addAccount,
         method: "get",
         params: params
       }).then(response => {
