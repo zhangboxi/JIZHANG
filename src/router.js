@@ -68,18 +68,21 @@ const router = new Router({
               name: "message",
               meta: { title: "详情页" },
               component: () =>
-                import(
-                  /* webpackChunkName: "dashboard" */ "./views/Account/Message"
-                )
+                import(/* webpackChunkName: "dashboard" */ "./views/Account/Message")
             },
             {
               path: "/account/add",
               name: "add",
               meta: { title: "添加页" },
               component: () =>
-                import(
-                  /* webpackChunkName: "dashboard" */ "./views/Account/Add"
-                )
+                import(/* webpackChunkName: "dashboard" */ "./views/Account/Add")
+            },
+            {
+              path: "/account/analysis",
+              name: "analysis",
+              meta: { title: "分析页面" },
+              component: () =>
+                import(/* webpackChunkName: "dashboard" */ "./views/Account/Analysis")
             }
           ]
         },
@@ -94,9 +97,7 @@ const router = new Router({
               name: "analysis",
               meta: { title: "分析页" },
               component: () =>
-                import(
-                  /* webpackChunkName: "dashboard" */ "./views/Dashboard/Analysis"
-                )
+                import(/* webpackChunkName: "dashboard" */ "./views/Dashboard/Analysis")
             }
           ]
         },
@@ -130,25 +131,19 @@ const router = new Router({
                   path: "/form/step-form/info",
                   name: "info",
                   component: () =>
-                    import(
-                      /* webpackChunkName: "form" */ "./views/Forms/StepForm/Step1"
-                    )
+                    import(/* webpackChunkName: "form" */ "./views/Forms/StepForm/Step1")
                 },
                 {
                   path: "/form/step-form/confirm",
                   name: "confirm",
                   component: () =>
-                    import(
-                      /* webpackChunkName: "form" */ "./views/Forms/StepForm/Step2"
-                    )
+                    import(/* webpackChunkName: "form" */ "./views/Forms/StepForm/Step2")
                 },
                 {
                   path: "/form/step-form/result",
                   name: "result",
                   component: () =>
-                    import(
-                      /* webpackChunkName: "form" */ "./views/Forms/StepForm/Step3"
-                    )
+                    import(/* webpackChunkName: "form" */ "./views/Forms/StepForm/Step3")
                 }
               ]
             }
@@ -166,27 +161,21 @@ const router = new Router({
               path: "/exception/403",
               name: "exception403",
               component: () =>
-                import(
-                  /* webpackChunkName: "exception" */ "@/views/Exception/403"
-                ),
+                import(/* webpackChunkName: "exception" */ "@/views/Exception/403"),
               meta: { title: "403" }
             },
             {
               path: "/exception/404",
               name: "exception404",
               component: () =>
-                import(
-                  /* webpackChunkName: "exception" */ "@/views/Exception/404"
-                ),
+                import(/* webpackChunkName: "exception" */ "@/views/Exception/404"),
               meta: { title: "404" }
             },
             {
               path: "/exception/500",
               name: "exception500",
               component: () =>
-                import(
-                  /* webpackChunkName: "exception" */ "@/views/Exception/500"
-                ),
+                import(/* webpackChunkName: "exception" */ "@/views/Exception/500"),
               meta: { title: "500" }
             }
           ]
@@ -203,18 +192,14 @@ const router = new Router({
               path: "/profile/basic",
               name: "basic",
               component: () =>
-                import(
-                  /* webpackChunkName: "profile" */ "@/views/Profile/BasicProfile"
-                ),
+                import(/* webpackChunkName: "profile" */ "@/views/Profile/BasicProfile"),
               meta: { title: "基础详情页" }
             },
             {
               path: "/profile/advanced",
               name: "advanced",
               component: () =>
-                import(
-                  /* webpackChunkName: "profile" */ "@/views/Profile/AdvancedProfile"
-                ),
+                import(/* webpackChunkName: "profile" */ "@/views/Profile/AdvancedProfile"),
               meta: { title: "高级详情页" }
             }
           ]

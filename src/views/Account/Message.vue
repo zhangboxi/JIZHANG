@@ -96,9 +96,9 @@
       </span>
     </a-table>
     <div style=" float:right; font-size:25px;">
-      总计支出：{{ sumout }}<br />总计收入: {{ sumin }}<br />净收入：{{
-        jinglirun
-      }}
+      <pre><span style="color: red;">总计支出：{{ sumout }}</span></pre>
+      <pre><span style="color:green">总计收入: {{ sumin }}</span></pre>
+      <pre><span :style="{color:jinglirun>0?'green':'red'}">净收入：{{ jinglirun }}</span></pre>
     </div>
   </div>
 </template>
@@ -167,7 +167,7 @@ export default {
       page: 1,
       pagination: {
         pageNo: 1,
-        pageSize: 5, // 默认每页显示数量
+        pageSize: 10, // 默认每页显示数量
         showSizeChanger: true, // 显示可改变每页数量
         pageSizeOptions: ["5", "10", "20", "40"], // 每页数量选项
         showTotal: total => `总计 ${total} 条`, // 显示总数
@@ -283,7 +283,6 @@ export default {
         method: "get",
         params: params
       }).then(response => {
-        console.log(response.data);
         this.sumout = 0;
         this.sumin = 0;
         let outmoney = 0;
@@ -329,11 +328,17 @@ export default {
     },
     changePage(page, pageSize) {
       this.page = page;
-      console.log(pageSize);
       this.pagination.pageSize = pageSize;
     },
     shownote(values) {
-      console.log(values);
+      const h = this.$createElement;
+      this.$Modal.info({
+        title: "备注详情信息展示",
+        content: h("div", {}, [
+          h("p", values.NOTE != "undefined" ? values.NOTE : "无备注信息")
+        ]),
+        onOk() {}
+      });
     },
     selecttime(date, dateString) {
       this.starttime = dateString[0] + " 00:00:00";

@@ -9,6 +9,7 @@ import queryString from "query-string";
 import VueHighlightJS from "vue-highlightjs";
 
 import {
+  Modal,
   Divider,
   Table,
   Button,
@@ -65,7 +66,7 @@ FormItem.methods.decoratorOption = vnode => {
 };
 
 Vue.config.productionTip = false;
-
+Vue.use(Modal);
 Vue.use(Divider);
 Vue.use(Table);
 Vue.use(Button);
@@ -119,7 +120,7 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount("#app");
-
+Vue.prototype.$Modal = Modal;
 Date.prototype.Format = function(fmt) {
   var o = {
     "M+": this.getMonth() + 1,
