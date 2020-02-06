@@ -57,8 +57,11 @@ module.exports = {
       }
     },
     proxy: {
-      "/ACCOUNT": {
-        target: "http://localhost:8090"
+      // "/ACCOUNT": {
+      //   target: "http://localhost:8090"
+      "/account": {
+        target: "http://127.0.0.1:3000",
+        changeOrigin: true
         // bypass: function(req, res) {
         //   if (req.headers.accept.indexOf("html") !== -1) {
         //     console.log("Skipping proxy for browser request.");
