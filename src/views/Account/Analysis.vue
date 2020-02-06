@@ -72,9 +72,13 @@
         </a-row>
       </div>
     </template>
+    <Chart :option="chartOption" style="height: 400px" />
+    <Chart :option="chartOption2" style="height: 400px" />
   </div>
 </template>
 <script>
+// import request from "../../utils/request";
+import Chart from "../../components/Chart";
 export default {
   computed: {
     // 计算属性的 getter
@@ -87,11 +91,17 @@ export default {
       return this.message.LastMonthIncome - this.message.LastMonthOutcome;
     },
     SPer: () => {
+      console.log(" ");
       return (this.SIncome - this.SLastIncome) / this.SLastIncome;
     }
   },
+  components: {
+    Chart
+  },
   data() {
     return {
+      chartOption: {},
+      chartOption2: {},
       starttime: "",
       endtime: "",
       message: {
@@ -124,8 +134,41 @@ export default {
       pagesize: 5
     };
     this.queryAccount(params);
+    this.getChartData();
   },
   methods: {
+    getChartData() {
+      this.chartOption2 = {
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        },
+        yAxis: {
+          type: "value"
+        },
+        series: [
+          {
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: "line"
+          }
+        ]
+      };
+      this.chartOption = {
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        },
+        yAxis: {
+          type: "value"
+        },
+        series: [
+          {
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: "line"
+          }
+        ]
+      };
+    },
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {

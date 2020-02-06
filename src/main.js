@@ -7,6 +7,7 @@ import enUS from "./locale/enUS";
 import zhCN from "./locale/zhCN";
 import queryString from "query-string";
 import VueHighlightJS from "vue-highlightjs";
+import echarts from "echarts";
 
 import {
   Modal,
@@ -99,6 +100,7 @@ Vue.use(Popover);
 Vue.use(Progress);
 Vue.use(Alert);
 Vue.prototype.$message = message;
+Vue.prototype.$echarts = echarts;
 
 const i18n = new VueI18n({
   locale: queryString.parse(location.search).locale || "zhCN",
