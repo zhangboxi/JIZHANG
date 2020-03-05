@@ -1,8 +1,8 @@
 <template>
   <div style="padding: 0 25px 0 25px;">
     <a-form :form="form" layout="inline" @submit="handleSubmit">
-      <a-form-item label="时间筛选">
-        <a-range-picker
+      <a-form-item label="选择月份">
+        <a-month-picker
           @change="selecttime"
           v-decorator="['time', { rules: [{ required: false }] }]"
         />
@@ -51,7 +51,7 @@
               >
             </div>
           </a-col>
-          <a-col class="gutter-row" :span="6">
+          <!-- <a-col class="gutter-row" :span="6">
             <div class="gutter-box">
               本月净收入：<br /><span style="font-size: 40px; color: green;"
                 >￥{{ SIncome }}</span
@@ -68,61 +68,108 @@
                 >￥{{ message.Total }}</span
               >
             </div>
+          </a-col> -->
+        </a-row>
+      </div>
+      <div style="margin-top: 15px;">
+        <a-row :gutter="16">
+          <a-col class="gutter-row" :span="12">
+            <div class="gutter-box" style="height: 400px">
+              <a-tabs defaultActiveKey="1">
+                <a-tab-pane tab="总计开销" :style="{ height: '305px' }" key="1"
+                  ><Chart
+                    :option="ChartData.zongkaixiao_pie"
+                    style="height: 100%;width: 100%; float: left;"
+                  />
+                </a-tab-pane>
+                <a-tab-pane
+                  tab="张旭东"
+                  :style="{ height: '305px' }"
+                  key="2"
+                  forceRender
+                  ><Chart
+                    :option="ChartData.zxdkaixiao_pie"
+                    style="height: 100%;width: 100%; float: left;"
+                  />
+                </a-tab-pane>
+                <a-tab-pane tab="山博" :style="{ height: '305px' }" key="3"
+                  ><Chart
+                    :option="ChartData.sbkaixiao_pie"
+                    style="height: 100%;width: 100%; float: left;"
+                  />
+                </a-tab-pane>
+                <span
+                  style="font-weight: 800; font-size: 20px;"
+                  slot="tabBarExtraContent"
+                  >支出分析</span
+                >
+              </a-tabs>
+            </div>
+          </a-col>
+          <a-col class="gutter-row" :span="12">
+            <div class="gutter-box">col-6</div>
           </a-col>
         </a-row>
       </div>
     </template>
-    <Chart :option="chartOption" style="height: 400px" />
-    <Chart :option="chartOption2" style="height: 400px" />
   </div>
 </template>
 <script>
 // import request from "../../utils/request";
-import Chart from "../../components/Chart";
+import Chart from "../../components/Chart/Chart";
+import { pie1 } from "../../components/Chart/PieFunction.js";
+import request from "../../utils/request";
+import address from "./address.js";
+import MyDate from "../../utils/MyDate";
 export default {
   computed: {
     // 计算属性的 getter
-    SIncome: function() {
-      // `this` 指向 vm 实例
-      return this.message.MonthIncome - this.message.MonthOutcome;
-    },
-    SLastIncome: function() {
-      // `this` 指向 vm 实例
-      return this.message.LastMonthIncome - this.message.LastMonthOutcome;
-    },
-    SPer: () => {
-      console.log(" ");
-      return (this.SIncome - this.SLastIncome) / this.SLastIncome;
-    }
+    // SIncome: function() {
+    //   // `this` 指向 vm 实例
+    //   return this.message.MonthIncome - this.message.MonthOutcome;
+    // },
+    // SLastIncome: function() {
+    //   // `this` 指向 vm 实例
+    //   return this.message.LastMonthIncome - this.message.LastMonthOutcome;
+    // },
+    // SPer: () => {
+    //   console.log(" ");
+    //   return (this.SIncome - this.SLastIncome) / this.SLastIncome;
+    // }
   },
   components: {
     Chart
   },
   data() {
     return {
-      chartOption: {},
-      chartOption2: {},
+      ChartData: {
+        zongkaixiao_pie: {},
+        zxdkaixiao_pie: {},
+        sbkaixiao_pie: {}
+      },
       starttime: "",
       endtime: "",
       message: {
-        Total: 100,
-        MonthIncome: 110,
-        LastMonthIncome: 100,
-        MonthIncomePer: 10,
-        MonthOutcome: 90,
-        LastMonthOutcome: 100,
-        MonthOutcomePer: 10
+        Total: 0,
+        MonthIncome: 0,
+        LastMonthIncome: 0,
+        MonthIncomePer: 0,
+        MonthOutcome: 0,
+        LastMonthOutcome: 0,
+        MonthOutcomePer: 0
       },
       form: this.$form.createForm(this)
     };
   },
   mounted() {
-    let endtime = new Date().Format("yyyy-MM-dd");
-    let starttime = new Date();
-    starttime.setMonth(starttime.getMonth() - 1);
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth() + 1;
+    let nextmonth = month + 1;
+    let starttime = `${year}-${month}-01`;
+    let endtime = `${year}-${nextmonth}-01`;
 
-    this.starttime = starttime.Format("yyyy-MM-dd") + " 00:00:00";
-    this.endtime = endtime + " 23:59:59";
+    this.starttime = starttime + " 00:00:00";
+    this.endtime = endtime + " 00:00:00";
 
     let params = {
       starttime: this.starttime,
@@ -133,41 +180,55 @@ export default {
       page: 1,
       pagesize: 5
     };
-    this.queryAccount(params);
-    this.getChartData();
+    this.getChartData(params);
   },
   methods: {
-    getChartData() {
-      this.chartOption2 = {
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        },
-        yAxis: {
-          type: "value"
-        },
-        series: [
-          {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: "line"
+    getChartData(params) {
+      request({
+        url: address.QueryAccount,
+        method: "get",
+        params: params
+      }).then(response => {
+        let data = response.data.data;
+        if (data.length == 0) {
+          alert("未查询到数据");
+        } else {
+          let zongkaixiao_pie_data = []; //总开销DATA
+          let zxdkaixiao_pie_data = []; //张旭东开销DATA
+          let sbkaixiao_pie_data = []; //山博开销DATA
+
+          for (let i = 0; i < data.length; i++) {
+            let account = data[i];
+            if (account.PAY == 1) {
+              //支出分析
+              if (account.PERSON == "张旭东") {
+                zxdkaixiao_pie_data.AddPush({
+                  value: account.MONEY,
+                  name: account.EXPENDTYPE
+                });
+                zongkaixiao_pie_data.AddPush({
+                  value: account.MONEY,
+                  name: account.EXPENDTYPE
+                });
+              } else {
+                sbkaixiao_pie_data.AddPush({
+                  value: account.MONEY,
+                  name: account.EXPENDTYPE
+                });
+                zongkaixiao_pie_data.AddPush({
+                  value: account.MONEY,
+                  name: account.EXPENDTYPE
+                });
+              }
+            } else {
+              //收入分析
+            }
           }
-        ]
-      };
-      this.chartOption = {
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        },
-        yAxis: {
-          type: "value"
-        },
-        series: [
-          {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: "line"
-          }
-        ]
-      };
+          this.ChartData.sbkaixiao_pie = pie1(sbkaixiao_pie_data);
+          this.ChartData.zongkaixiao_pie = pie1(zongkaixiao_pie_data);
+          this.ChartData.zxdkaixiao_pie = pie1(zxdkaixiao_pie_data);
+        }
+      });
     },
     handleSubmit(e) {
       e.preventDefault();
@@ -184,16 +245,24 @@ export default {
             pagesize: 1
           };
 
-          this.queryAccount(params);
+          this.getChartData(params);
         }
       });
     },
-    queryAccount(params) {
-      console.log(params);
-    },
     selecttime(date, dateString) {
-      this.starttime = dateString[0] + " 00:00:00";
-      this.endtime = dateString[1] + " 23:59:59";
+      let mydate = new MyDate(dateString + "-01");
+      let new_nextmonth = mydate.StringCalcDate("month", -1);
+      console.log(new_nextmonth);
+      let nextmonth = dateString.substring(5, 7) * 1 + 1;
+      if (nextmonth < 10) {
+        nextmonth = "0" + nextmonth;
+      }
+
+      this.starttime = dateString + "-01 00:00:00";
+
+      let enddate = new Date((dateString + "-01 00:00:00").replace(/-/g, "/"));
+      enddate.setMonth(enddate.getMonth() + 1);
+      this.endtime = enddate.Format("yyyy-MM-dd HH:mm:ss");
     }
   }
 };

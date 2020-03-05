@@ -123,6 +123,30 @@ new Vue({
   render: h => h(App)
 }).$mount("#app");
 Vue.prototype.$Modal = Modal;
+
+Array.prototype.AddPush = function(param) {
+  if (this.length > 0) {
+    // debugger;
+    let sign = 0;
+    for (let i in this) {
+      if (this[i].name == param.name) {
+        // debugger;
+        sign = 1;
+        this[i].value = param.value + this[i].value;
+      }
+    }
+    if (sign != 1) {
+      this.push(param);
+    }
+  } else {
+    this.push(param);
+  }
+
+  return this;
+
+  // console.log(this);
+};
+
 Date.prototype.Format = function(fmt) {
   var o = {
     "M+": this.getMonth() + 1,
