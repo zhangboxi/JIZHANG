@@ -16,8 +16,24 @@
 
     <template>
       <div style="margin-top: 15px;">
-        <a-row :gutter="16">
-          <a-col class="gutter-row" :span="6">
+        <a-row :gutter="12">
+          <a-col class="gutter-row" :span="8">
+            <div class="gutter-box">
+              净收入：<br /><span style="font-size: 40px; color: blue; "
+                >￥{{ message.Total }}</span
+              >
+              <hr
+                style="height:1px;border:none;border-top:1px solid #A9A9A9;"
+              />
+              <span
+                >花销单数：{{ message.outcomecount }} &emsp; &emsp;
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &emsp; 收入单数：{{
+                  message.incomecount
+                }}</span
+              >
+            </div>
+          </a-col>
+          <a-col class="gutter-row" :span="8">
             <div class="gutter-box">
               本月收入：<br /><span style="font-size: 40px; color: green;"
                 >￥{{ message.MonthIncome }}</span
@@ -34,7 +50,7 @@
               >
             </div>
           </a-col>
-          <a-col class="gutter-row" :span="6">
+          <a-col class="gutter-row" :span="8">
             <div class="gutter-box">
               本月支出：<br /><span style="font-size: 40px; color: red;"
                 >￥{{ message.MonthOutcome }}</span
@@ -142,15 +158,17 @@ export default {
   },
   data() {
     return {
+      mydate: null,
       ChartData: {
         zongkaixiao_pie: {},
         zxdkaixiao_pie: {},
         sbkaixiao_pie: {}
       },
-      starttime: "",
-      endtime: "",
+      time: "",
       message: {
         Total: 0,
+        incomecount: 0,
+        outcomecount: 0,
         MonthIncome: 0,
         LastMonthIncome: 0,
         MonthIncomePer: 0,
@@ -162,107 +180,38 @@ export default {
     };
   },
   mounted() {
-    let year = new Date().getFullYear();
-    let month = new Date().getMonth() + 1;
-    let nextmonth = month + 1;
-    let starttime = `${year}-${month}-01`;
-    let endtime = `${year}-${nextmonth}-01`;
-
-    this.starttime = starttime + " 00:00:00";
-    this.endtime = endtime + " 00:00:00";
-
-    let params = {
-      starttime: this.starttime,
-      endtime: this.endtime,
-      personid: "null",
-      typeid: "null",
-      ispay: "null",
-      page: 1,
-      pagesize: 5
-    };
-    this.getChartData(params);
+    this.mydate = new MyDate();
+    this.time = this.mydate.Format("yyyy-MM-dd");
+    this.getStatisticsData(this.mydate.Format("yyyy-MM-dd"));
   },
   methods: {
-    getChartData(params) {
+    getStatisticsData() {
       request({
-        url: address.QueryAccount,
+        url: address.MonthAnalysis,
         method: "get",
-        params: params
+        params: { time: this.time }
       }).then(response => {
-        let data = response.data.data;
-        if (data.length == 0) {
-          alert("未查询到数据");
-        } else {
-          let zongkaixiao_pie_data = []; //总开销DATA
-          let zxdkaixiao_pie_data = []; //张旭东开销DATA
-          let sbkaixiao_pie_data = []; //山博开销DATA
-
-          for (let i = 0; i < data.length; i++) {
-            let account = data[i];
-            if (account.PAY == 1) {
-              //支出分析
-              if (account.PERSON == "张旭东") {
-                zxdkaixiao_pie_data.AddPush({
-                  value: account.MONEY,
-                  name: account.EXPENDTYPE
-                });
-                zongkaixiao_pie_data.AddPush({
-                  value: account.MONEY,
-                  name: account.EXPENDTYPE
-                });
-              } else {
-                sbkaixiao_pie_data.AddPush({
-                  value: account.MONEY,
-                  name: account.EXPENDTYPE
-                });
-                zongkaixiao_pie_data.AddPush({
-                  value: account.MONEY,
-                  name: account.EXPENDTYPE
-                });
-              }
-            } else {
-              //收入分析
-            }
-          }
-          this.ChartData.sbkaixiao_pie = pie1(sbkaixiao_pie_data);
-          this.ChartData.zongkaixiao_pie = pie1(zongkaixiao_pie_data);
-          this.ChartData.zxdkaixiao_pie = pie1(zxdkaixiao_pie_data);
-        }
+        console.log(response);
+        this.ChartData.sbkaixiao_pie = pie1(response.data.sbkaixiao_pie_data);
+        this.ChartData.zongkaixiao_pie = pie1(
+          response.data.zongkaixiao_pie_data
+        );
+        this.ChartData.zxdkaixiao_pie = pie1(response.data.zxdkaixiao_pie_data);
+        this.message.outcomecount = response.data.outcomecount;
+        this.message.incomecount = response.data.incomecount;
+        this.message.Total = response.data.jingshouru;
       });
     },
     handleSubmit(e) {
       e.preventDefault();
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(err => {
         if (!err) {
-          console.log(values);
-          let params = {
-            starttime: this.starttime,
-            endtime: this.endtime,
-            personid: "null",
-            typeid: "null",
-            ispay: "null",
-            page: 1,
-            pagesize: 1
-          };
-
-          this.getChartData(params);
+          this.getStatisticsData();
         }
       });
     },
     selecttime(date, dateString) {
-      let mydate = new MyDate(dateString + "-01");
-      let new_nextmonth = mydate.StringCalcDate("month", -1);
-      console.log(new_nextmonth);
-      let nextmonth = dateString.substring(5, 7) * 1 + 1;
-      if (nextmonth < 10) {
-        nextmonth = "0" + nextmonth;
-      }
-
-      this.starttime = dateString + "-01 00:00:00";
-
-      let enddate = new Date((dateString + "-01 00:00:00").replace(/-/g, "/"));
-      enddate.setMonth(enddate.getMonth() + 1);
-      this.endtime = enddate.Format("yyyy-MM-dd HH:mm:ss");
+      this.time = dateString + "-01";
     }
   }
 };
