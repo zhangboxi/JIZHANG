@@ -29,6 +29,7 @@ const actions = {
     console.log("刷新类型数据");
     await request({
       url: "/ACCOUNT/AccountController/SelectAccountType.do",
+      params: { timestamp: new Date().valueOf() },
       method: "get"
     }).then(response => {
       commit("set_Accounttypedata", response.data);

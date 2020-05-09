@@ -56,9 +56,30 @@
         />
       </a-form-item>
       <a-form-item :style="{ marginLeft: '40px' }">
-        <a-button type="primary" html-type="submit">
+        <a-button
+          type="primary"
+          :style="{ marginLeft: '10px' }"
+          html-type="submit"
+        >
           查询
         </a-button>
+        <a-button
+          :style="{ marginLeft: '10px' }"
+          type="primary"
+          @click="addAccountPage"
+        >
+          新增
+        </a-button>
+        <a-modal
+          v-model="visible"
+          title="添加一条记录"
+          @ok="handleOk"
+          ok-text="添加"
+          cancel-text="取消"
+        >
+          <addpage :displayfoot="false" ref="addpage"></addpage>
+        </a-modal>
+
         <a-button
           type="primary"
           @click="handleReset"
@@ -81,9 +102,9 @@
           {{ PAY.text }}
         </a-tag>
       </span>
-      <span slot="PERSON" slot-scope="PERSON">
-        <a-tag :color="PERSON.color">
-          {{ PERSON.text }}
+      <span slot="PERSONNAME" slot-scope="PERSONData">
+        <a-tag :color="PERSONData.color">
+          {{ PERSONData.text }}
         </a-tag>
       </span>
       <span slot="action" slot-scope="record">
@@ -107,6 +128,7 @@
 import request from "../../utils/request";
 import myMixin from "./basic";
 import address from "./address.js";
+import addpage from "./Add2";
 
 const columns = [
   {
@@ -128,9 +150,9 @@ const columns = [
   },
   {
     title: "花销人",
-    key: "PERSON",
+    key: "PERSONData", //与上方slot-scope对应，插槽的数据名
     dataIndex: "PERSON",
-    scopedSlots: { customRender: "PERSON" }
+    scopedSlots: { customRender: "PERSONNAME" } //与slot对应，插槽名
   },
   {
     title: "类型",
@@ -138,7 +160,7 @@ const columns = [
     key: "TYPE"
   },
   {
-    title: "Action",
+    title: "操作",
     key: "action",
     scopedSlots: { customRender: "action" }
   }
@@ -153,8 +175,12 @@ export default {
       return this.sumin - this.sumout;
     }
   },
+  components: {
+    addpage
+  },
   data() {
     return {
+      visible: false,
       sumout: 0,
       sumin: 0,
       persondata: null,
@@ -201,6 +227,14 @@ export default {
     this.getType();
   },
   methods: {
+    addAccountPage() {
+      this.visible = true;
+    },
+    handleOk() {
+      this.$refs.addpage.handleSubmit();
+      this.handleReset();
+      this.visible = false;
+    },
     handleReset() {
       let endtime = new Date().Format("yyyy-MM-dd");
       let starttime = new Date();
@@ -306,9 +340,9 @@ export default {
               text: data.PERSON,
               color:
                 data.PERSON == "张旭东"
-                  ? "red"
+                  ? "#0000FF"
                   : data.PERSON == "山博"
-                  ? "blue"
+                  ? "#DC143C"
                   : "green"
             },
             NOTE: data.NOTE
