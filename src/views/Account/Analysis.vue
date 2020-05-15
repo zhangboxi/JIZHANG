@@ -200,6 +200,8 @@ export default {
         this.message.outcomecount = response.data.outcomecount;
         this.message.incomecount = response.data.incomecount;
         this.message.Total = response.data.jingshouru;
+        this.message.MonthIncome = response.data.income;
+        this.message.MonthOutcome = response.data.outcome;
       });
     },
     handleSubmit(e) {
